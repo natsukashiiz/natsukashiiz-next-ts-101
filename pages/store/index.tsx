@@ -1,32 +1,17 @@
+import { RootState } from "@/store";
+import { useAppSelector, useAppDispatch } from "@/store/hooks";
+import { decrement, increment, update } from "@/store/slice";
 import Link from "next/link";
-import { useState, ChangeEvent, useEffect } from "react";
 
-export default function Store() {
-    const intitCount = 0;
-    const [count, setCount] = useState<number>(intitCount);
-
-    function increment() {
-        setCount(count + 1);
-    }
-    function decrement() {
-        setCount(count - 1);
-    }
-    function handleChange(e: ChangeEvent<HTMLInputElement>) {
-        setCount(Number(e.target.value));
-    }
-
-    useEffect(() => {
-        console.log("Store: useEffect");
-        return () => {
-            console.log("Store: useEffect cleanup");
-        };
-    }, [count]);
+export default function Store(): JSX.Element {
+    const counter = useAppSelector((state: RootState) => state.counter.value);
+    const dispath = useAppDispatch();
 
     return <div>
-        <h1>Store: [{count}]</h1>
-        <button onClick={decrement}>-</button>
-        <button onClick={increment}>+</button><br />
-        <input type="number" name="count" id="count" value={count} onChange={handleChange} /><br />
+        <h1>Store: [{counter}]</h1>
+        <button onClick={() => dispath(decrement())}>-</button>
+        <button onClick={() => dispath(increment())}>+</button><br />
+        <input type="number" name="count" value={counter} onChange={(e) => dispath(update(Number(e.target.value)))} /><br />
         <Link href="/">Back to Home</Link>
     </div>;
 }
